@@ -2,6 +2,7 @@ package com.rvsd.todolist.controller;
 
 import com.rvsd.todolist.entity.Todo;
 import com.rvsd.todolist.service.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class TodoController {
     }
 
     @PostMapping
-    List<Todo> create(@RequestBody Todo todo) {
+    List<Todo> create(@RequestBody @Valid Todo todo) {
         return todoService.create(todo);
     }
 
-    @PutMapping
-    List<Todo> update(@RequestBody Todo todo) {
+    @PutMapping("{id}")
+    List<Todo> update(@PathVariable Long id, @RequestBody Todo todo) {
         return todoService.update(todo);
     }
 

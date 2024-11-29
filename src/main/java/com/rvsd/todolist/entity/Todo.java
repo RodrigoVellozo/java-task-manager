@@ -1,6 +1,7 @@
 package com.rvsd.todolist.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "todos")
@@ -8,10 +9,23 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "O campo NOME nao pode ser vazio")
     private String nome;
+    @NotBlank(message = "O campo DESCRICAO nao pode ser vazia")
     private String descricao;
     private boolean realizado;
     private int prioridade;
+
+    public Todo() {
+    }
+
+    public Todo(Long id,String nome, String descricao, boolean realizado, int prioridade) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.realizado = realizado;
+        this.prioridade = prioridade;
+    }
 
     public Long getId() {
         return id;
@@ -37,7 +51,7 @@ public class Todo {
         this.descricao = descricao;
     }
 
-    public boolean isRealizado() {
+    public boolean getRealizado() {
         return realizado;
     }
 
