@@ -112,7 +112,7 @@ class TodolistApplicationTests {
 
     @Test
     void testDeleteTodoFailure() {
-        var unexistingId = 0L;
+        var unexistingId = 500L;
         webTestClient
                 .delete()
                 .uri("/api/todos/" + unexistingId)

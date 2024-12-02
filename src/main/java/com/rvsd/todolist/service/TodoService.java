@@ -2,6 +2,7 @@ package com.rvsd.todolist.service;
 
 import com.rvsd.todolist.entity.Todo;
 import com.rvsd.todolist.repository.TodoRepository;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,28 @@ public class TodoService {
         return list();
     }
 
-    public List<Todo> update(Todo todo) {
-        todoRepository.save(todo);
+    public List<Todo> update(Long id, Todo todo)  {
+        todoRepository.findById(id).ifPresentOrElse((existingTodo) -> {
+            todo.setId(id);
+            todoRepository.save(todo);
+        }, () -> {
+            try {
+                throw new BadRequestException("Todo %d não encontrado!".formatted(id));
+            } catch (BadRequestException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return list();
     }
 
     public List<Todo> delete(Long id) {
-        todoRepository.deleteById(id);
+        todoRepository.findById(id).ifPresentOrElse((existingTodo) -> todoRepository.delete(existingTodo), () -> {
+            try {
+                throw new BadRequestException("Todo %d não encontrado!".formatted(id));
+            } catch (BadRequestException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return list();
     }
 
@@ -35,5 +51,4 @@ public class TodoService {
         );
         return todoRepository.findAll(sort);
     }
-
 }

@@ -3,6 +3,8 @@ package com.rvsd.todolist.controller;
 import com.rvsd.todolist.entity.Todo;
 import com.rvsd.todolist.service.TodoService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +20,17 @@ public class TodoController {
     }
 
     @PostMapping
-    List<Todo> create(@RequestBody @Valid Todo todo) {
-        return todoService.create(todo);
+    ResponseEntity<List<Todo>> create(@RequestBody @Valid Todo todo) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(todo));
     }
 
     @PutMapping("{id}")
-    List<Todo> update(@PathVariable Long id, @RequestBody Todo todo) {
-        return todoService.update(todo);
+    ResponseEntity<List<Todo>> update(@PathVariable Long id, @RequestBody Todo todo) {
+        List<Todo> updatedTodo = todoService.update(id, todo);
+        if (updatedTodo.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedTodo);
     }
 
     @DeleteMapping("{id}")
